@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BookCatalogueService.Dtos;
+using BookCatalogueService.Models.Repository;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-
+using BookCatalogueService.Models;
 
 namespace BookCatalogueService.Controllers
 {
@@ -8,44 +11,66 @@ namespace BookCatalogueService.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
-        /// <summary>
-        /// Add a Book
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost,Route("add")]
-        public IEnumerable<string> AddBook()
+        private IBook _Ibook;
+
+        public BookController(IBook book)
         {
-            return new string[] { "value1", "value2" };
+            _Ibook = book;
+        }
+        [HttpGet]
+        public IEnumerable<Book> GetBooks()
+        {
+            return _Ibook.GetBooks();
         }
 
-        /// <summary>
-        /// Get list of Books
-        /// </summary>
-        /// <returns></returns>
         [HttpGet("{id}")]
-        public string GetBookList(int id)
+        public ActionResult<BookDTO> GetBook(Guid id)
         {
-            return "value";
+            var book = _Ibook.GetBook(id);
+            if (book == null)
+                return NotFound();
+            var bookDto = new BookDTO { Id = book.Id, Title = book.Title};
+            return bookDto;
         }
 
-        /// <summary>
-        /// Update the Book
-        /// </summary>
-        /// <param name="value"></param>
+
         [HttpPost]
-        public void UpdateBook([FromBody] string value)
+        public ActionResult<Book> CreatBook(CreateOrUpdateDto book)
         {
+            var newBook = new Book();
+            newBook.Title = book.Title;
+            newBook.Id = Guid.NewGuid();
+
+            _Ibook.CreateBook(newBook);
+            return Ok();
         }
 
-        
-        /// <summary>
-        /// Delete the Book
-        /// </summary>
-        /// <param name="id"></param>
-        [HttpDelete("{id}")]
-        public void DeleteBook(int id)
+        [HttpPut("{id}")]
+        public ActionResult<BookDTO> UpdateBook(Guid id, CreateOrUpdateDto book)
         {
+            var mybook = _Ibook.GetBook(id);
+            if (mybook == null)
+            {
+                return NotFound();
+            }
+            mybook.Author = book.Author;
+            mybook.Title = book.Title;
+            mybook.Id = Guid.NewGuid();
 
+            _Ibook.UpdateBook(id, mybook);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<BookDTO> DeleteBook(Guid id)
+        {
+            var mybook = _Ibook.GetBook(id);
+            if (mybook == null)
+            {
+                return NotFound();
+            }
+            _Ibook.DeleteBook(mybook);
+            return Ok();
         }
     }
 }

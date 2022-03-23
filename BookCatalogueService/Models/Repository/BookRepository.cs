@@ -10,11 +10,11 @@ namespace BookCatalogueService.Models.Repository
         /// <summary>
         /// _books
         /// </summary>
-        private readonly List<Book> _books;
+        private  List<Book> _books ;
 
         public BookRepository()
         {
-            _books.Add( new Book { Id = Guid.NewGuid(), Title = "Kids Story Book", Author = "Laskshmy" } );
+            _books.Add( new Book { Id = Guid.NewGuid(), Title = "Kids Story Book", Author = "Laskshmy" , ISBN=6564543433339 , PublicationDate =DateTime.Now} );
         }
 
         public void CreateBook(Book book)

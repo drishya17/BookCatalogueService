@@ -11,6 +11,9 @@ namespace BookCatalogueService.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
+        /// <summary>
+        /// Book
+        /// </summary>
         private IBook _Ibook;
 
         public BookController(IBook book)

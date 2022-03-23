@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace BookCatalogueService.Models.Repository
 {
+    /// <summary>
+    /// Book
+    /// </summary>
     public interface IBook
     {
         public IEnumerable<Book> GetBooks();
